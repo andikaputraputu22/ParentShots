@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
@@ -78,6 +79,12 @@ fun HomeScreen() {
             )
             item {
                 TrendingBox(items = articles)
+            }
+            item { 
+                RecommendationHeader()
+            }
+            items(articles) { item ->
+                RecommendationItem(item = item)
             }
         }
     }
@@ -249,6 +256,98 @@ fun TrendingItem(
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )
+        }
+    }
+}
+
+@Composable
+fun RecommendationHeader() {
+    Spacer(modifier = Modifier.height(8.dp))
+    Column(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        val colorScheme = MaterialTheme.colorScheme
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 16.dp)
+        ) {
+            Text(
+                text = "Recommendation",
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            Text(
+                text = "View all",
+                fontSize = 14.sp,
+                color = colorScheme.primary
+            )
+        }
+    }
+}
+
+@Composable
+fun RecommendationItem(
+    item: Article
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 16.dp, end = 16.dp, bottom = 8.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .clip(RoundedCornerShape(16.dp))
+                .background(Color.LightGray)
+                .size(120.dp)
+        ) {
+            AsyncImage(
+                model = item.photo,
+                contentDescription = item.title,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
+            )
+        }
+        Column(
+            modifier = Modifier
+                .padding(start = 8.dp)
+        ) {
+            val colorScheme = MaterialTheme.colorScheme
+            Text(
+                text = item.category,
+                fontSize = 14.sp,
+                color = colorScheme.primary
+            )
+            Text(
+                text = item.title,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.SemiBold,
+                maxLines = 3,
+                overflow = TextOverflow.Ellipsis
+            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = item.source,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(
+                    text = "\u2022",
+                    fontSize = 12.sp,
+                    color = colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(
+                    text = item.time,
+                    fontSize = 12.sp,
+                    color = colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                )
+            }
         }
     }
 }
