@@ -1,6 +1,7 @@
 package com.nandikacreativestudio.parentshots.ui.page
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
@@ -38,7 +40,9 @@ import com.nandikacreativestudio.parentshots.ui.component.CircularMenuButton
 import com.nandikacreativestudio.parentshots.ui.component.CircularSearchButton
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    onItemClick: (Article) -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -55,6 +59,7 @@ fun HomeScreen() {
         ) {
             val articles = listOf(
                 Article(
+                    id = "1",
                     title = "What Training Do Volleyball Players Need?",
                     photo = "https://images.pexels.com/photos/2253879/pexels-photo-2253879.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
                     category = "Children",
@@ -62,6 +67,7 @@ fun HomeScreen() {
                     time = "2 hours ago"
                 ),
                 Article(
+                    id = "2",
                     title = "Secondary School Places: When Do Parents Find Out?",
                     photo = "https://images.pexels.com/photos/3036405/pexels-photo-3036405.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
                     category = "Parenting",
@@ -69,6 +75,7 @@ fun HomeScreen() {
                     time = "3 hours ago"
                 ),
                 Article(
+                    id = "3",
                     title = "6 Houses Destroyed in Massive Fire in Assams K",
                     photo = "https://images.pexels.com/photos/701016/pexels-photo-701016.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
                     category = "Play",
@@ -78,6 +85,15 @@ fun HomeScreen() {
             )
             item {
                 TrendingBox(items = articles)
+            }
+            item { 
+                RecommendationHeader()
+            }
+            items(articles) { item ->
+                RecommendationItem(
+                    item = item,
+                    onClick = { onItemClick(item) }
+                )
             }
         }
     }
@@ -249,6 +265,100 @@ fun TrendingItem(
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )
+        }
+    }
+}
+
+@Composable
+fun RecommendationHeader() {
+    Spacer(modifier = Modifier.height(8.dp))
+    Column(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        val colorScheme = MaterialTheme.colorScheme
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 16.dp)
+        ) {
+            Text(
+                text = "Recommendation",
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            Text(
+                text = "View all",
+                fontSize = 14.sp,
+                color = colorScheme.primary
+            )
+        }
+    }
+}
+
+@Composable
+fun RecommendationItem(
+    item: Article,
+    onClick: () -> Unit
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 16.dp, end = 16.dp, bottom = 8.dp)
+            .clickable { onClick() }
+    ) {
+        Box(
+            modifier = Modifier
+                .clip(RoundedCornerShape(16.dp))
+                .background(Color.LightGray)
+                .size(120.dp)
+        ) {
+            AsyncImage(
+                model = item.photo,
+                contentDescription = item.title,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
+            )
+        }
+        Column(
+            modifier = Modifier
+                .padding(start = 8.dp)
+        ) {
+            val colorScheme = MaterialTheme.colorScheme
+            Text(
+                text = item.category,
+                fontSize = 14.sp,
+                color = colorScheme.primary
+            )
+            Text(
+                text = item.title,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.SemiBold,
+                maxLines = 3,
+                overflow = TextOverflow.Ellipsis
+            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = item.source,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(
+                    text = "\u2022",
+                    fontSize = 12.sp,
+                    color = colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(
+                    text = item.time,
+                    fontSize = 12.sp,
+                    color = colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                )
+            }
         }
     }
 }

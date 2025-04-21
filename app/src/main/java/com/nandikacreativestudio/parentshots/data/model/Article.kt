@@ -1,6 +1,7 @@
 package com.nandikacreativestudio.parentshots.data.model
 
 data class Article(
+    val id: String,
     val title: String,
     val photo: String,
     val category: String,

@@ -15,12 +15,16 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.createGraph
+import androidx.navigation.navArgument
 import com.nandikacreativestudio.parentshots.data.model.NavigationItem
 import com.nandikacreativestudio.parentshots.ui.page.CategoryScreen
+import com.nandikacreativestudio.parentshots.ui.page.DetailArticleScreen
 import com.nandikacreativestudio.parentshots.ui.page.HomeScreen
 import com.nandikacreativestudio.parentshots.ui.page.PediaScreen
 import com.nandikacreativestudio.parentshots.utils.Screen
@@ -29,21 +33,41 @@ import com.nandikacreativestudio.parentshots.utils.Screen
 fun ParentShotsApp(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
 
+    val currentBackStackEntry = navController.currentBackStackEntryAsState()
+    val currentDestination = currentBackStackEntry.value?.destination
+
+    val isBottomBarVisible = currentDestination?.route in listOf(
+        Screen.Home.route,
+        Screen.Category.route,
+        Screen.Pedia.route
+    )
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
-            BottomNavigationBar(navController)
+            if (isBottomBarVisible) {
+                BottomNavigationBar(navController)
+            }
         }
     ) { innerPadding ->
         val graph = navController.createGraph(startDestination = Screen.Home.route) {
             composable(route = Screen.Home.route) {
-                HomeScreen()
+                HomeScreen(onItemClick = { article ->
+                    navController.navigate(Screen.DetailArticle.createRoute(article.id))
+                })
             }
             composable(route = Screen.Category.route) {
                 CategoryScreen()
             }
             composable(route = Screen.Pedia.route) {
                 PediaScreen()
+            }
+            composable(
+                route = Screen.DetailArticle.route,
+                arguments = listOf(navArgument("id") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val id = backStackEntry.arguments?.getString("id") ?: ""
+                DetailArticleScreen(id = id)
             }
         }
         NavHost(
