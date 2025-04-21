@@ -1,6 +1,7 @@
 package com.nandikacreativestudio.parentshots.ui.page
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -39,7 +40,9 @@ import com.nandikacreativestudio.parentshots.ui.component.CircularMenuButton
 import com.nandikacreativestudio.parentshots.ui.component.CircularSearchButton
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    onItemClick: (Article) -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -56,6 +59,7 @@ fun HomeScreen() {
         ) {
             val articles = listOf(
                 Article(
+                    id = "1",
                     title = "What Training Do Volleyball Players Need?",
                     photo = "https://images.pexels.com/photos/2253879/pexels-photo-2253879.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
                     category = "Children",
@@ -63,6 +67,7 @@ fun HomeScreen() {
                     time = "2 hours ago"
                 ),
                 Article(
+                    id = "2",
                     title = "Secondary School Places: When Do Parents Find Out?",
                     photo = "https://images.pexels.com/photos/3036405/pexels-photo-3036405.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
                     category = "Parenting",
@@ -70,6 +75,7 @@ fun HomeScreen() {
                     time = "3 hours ago"
                 ),
                 Article(
+                    id = "3",
                     title = "6 Houses Destroyed in Massive Fire in Assams K",
                     photo = "https://images.pexels.com/photos/701016/pexels-photo-701016.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
                     category = "Play",
@@ -84,7 +90,10 @@ fun HomeScreen() {
                 RecommendationHeader()
             }
             items(articles) { item ->
-                RecommendationItem(item = item)
+                RecommendationItem(
+                    item = item,
+                    onClick = { onItemClick(item) }
+                )
             }
         }
     }
@@ -290,13 +299,15 @@ fun RecommendationHeader() {
 
 @Composable
 fun RecommendationItem(
-    item: Article
+    item: Article,
+    onClick: () -> Unit
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = 16.dp, end = 16.dp, bottom = 8.dp)
+            .clickable { onClick() }
     ) {
         Box(
             modifier = Modifier
