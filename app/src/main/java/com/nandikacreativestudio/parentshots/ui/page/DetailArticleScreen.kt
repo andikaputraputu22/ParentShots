@@ -25,6 +25,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.nandikacreativestudio.parentshots.data.model.Article
 import com.nandikacreativestudio.parentshots.ui.component.CircularBackButton
@@ -34,7 +35,8 @@ import com.nandikacreativestudio.parentshots.ui.component.CircularShareButton
 
 @Composable
 fun DetailArticleScreen(
-    id: String
+    id: String,
+    navController: NavController
 ) {
     Column(
         modifier = Modifier
@@ -42,7 +44,7 @@ fun DetailArticleScreen(
     ) {
         Spacer(modifier = Modifier.height(16.dp))
         HeaderMenu(
-            onBackClick = {},
+            onBackClick = { navController.popBackStack() },
             onShareClick = {},
             onFavoriteClick = {}
         )

@@ -14,6 +14,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -67,7 +68,7 @@ fun ParentShotsApp(modifier: Modifier = Modifier) {
                 arguments = listOf(navArgument("id") { type = NavType.StringType })
             ) { backStackEntry ->
                 val id = backStackEntry.arguments?.getString("id") ?: ""
-                DetailArticleScreen(id = id)
+                DetailArticleScreen(id = id, navController = navController)
             }
         }
         NavHost(
@@ -103,6 +104,9 @@ fun BottomNavigationBar(navController: NavHostController) {
     val unselectedColor = colorScheme.onSurfaceVariant
     val backgroundColor = colorScheme.surface
 
+    val currentBackStackEntry = navController.currentBackStackEntryAsState()
+    val currentDestination = currentBackStackEntry.value?.destination
+
     val selectedNavIndex = rememberSaveable {
         mutableIntStateOf(0)
     }
@@ -111,12 +115,18 @@ fun BottomNavigationBar(navController: NavHostController) {
         containerColor = backgroundColor
     ) {
         navItemList.forEachIndexed { index, navigationItem ->
-            val isSelected = selectedNavIndex.intValue == index
+            val isSelected = currentDestination?.route == navigationItem.route
             NavigationBarItem(
                 selected = isSelected,
                 onClick = {
                     selectedNavIndex.intValue = index
-                    navController.navigate(navigationItem.route)
+                    navController.navigate(navigationItem.route) {
+                        popUpTo(navController.graph.findStartDestination().id) {
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
                 },
                 icon = {
                     Icon(
