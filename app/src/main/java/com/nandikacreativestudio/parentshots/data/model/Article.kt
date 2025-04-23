@@ -6,5 +6,7 @@ data class Article(
     val photo: String,
     val category: String,
     val source: String,
-    val time: String
+    val time: String,
+    val caption: String = "",
+    val description: String = ""
 )
