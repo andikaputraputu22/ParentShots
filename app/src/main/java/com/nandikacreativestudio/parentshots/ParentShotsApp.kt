@@ -88,7 +88,7 @@ fun BottomNavigationBar(navController: NavHostController) {
             route = Screen.Home.route
         ),
         NavigationItem(
-            label = "Category",
+            label = "Discover",
             icon = R.drawable.ic_category,
             route = Screen.Category.route
         ),
